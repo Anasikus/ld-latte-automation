@@ -1,75 +1,208 @@
-# React + TypeScript + Vite
+# LD LATTE — Automation Test Assignment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Тестовое задание по автоматизации бизнес-процессов с использованием **n8n, React, TypeScript и Supabase**.
 
-Currently, two official plugins are available:
+Проект включает Telegram-бота с динамическим списком услуг, веб-приложение для управления заявками и технический план интеграции Instagram Direct через Meta API.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Реализованные возможности
 
-## React Compiler
+### 1. Telegram-бот — n8n + Supabase
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Telegram-бот позволяет пользователям просматривать актуальный список услуг и выбирать интересующую услугу с помощью inline-кнопок.
 
-## Expanding the ESLint configuration
+**Реализовано:**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Автоматическая обработка команды `/start`.
+- Получение списка активных услуг из Supabase через REST API.
+- Динамическое формирование inline-клавиатуры.
+- Обработка нажатий на кнопки через `callback_query`.
+- Проверка актуальности выбранной услуги.
+- Уведомление пользователя о выбранной услуге.
+- Корректная обработка отсутствия активных услуг.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Архитектура:**
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+`Telegram Trigger → Switch → Supabase REST API → Code → Telegram Bot API`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Workflow разделён на две ветки:
 
+- **Start:** получение активных услуг и отправка клавиатуры.
+- **Callback:** проверка выбранной услуги и отправка уведомления.
+
+Список кнопок формируется из базы данных при каждом запросе `/start`, поэтому изменение услуг не требует редактирования workflow.
+
+**Проверенные сценарии:**
+
+| Количество активных услуг | Результат |
+|---|---|
+| 0 | Сообщение об отсутствии услуг |
+| 2 | Две inline-кнопки |
+| 5 | Пять inline-кнопок |
+| 9 | Девять inline-кнопок |
+
+Также проверена обработка выбора услуги.
+
+### 2. Веб-приложение — React + Supabase
+
+Веб-приложение предназначено для работы с пользовательскими заявками.
+
+**Технологии:**
+
+- React
+- TypeScript
+- Vite
+- SCSS
+- React Router
+- Supabase Authentication
+- Supabase PostgreSQL
+- Supabase Row Level Security (RLS)
+
+**Реализовано:**
+
+- Регистрация и авторизация пользователей.
+- Сохранение пользовательской сессии.
+- Защищённые маршруты.
+- Создание и редактирование заявок.
+- Просмотр списка заявок.
+- Поиск и фильтрация.
+- Категории и статусы заявок.
+- Адаптивный пользовательский интерфейс.
+- Разграничение доступа к данным.
+
+**Безопасность данных:**
+
+Для таблицы `requests` настроены политики RLS. Пользователь может работать только со своими заявками.
+
+Изоляция данных проверена с использованием двух отдельных аккаунтов.
+
+**Опубликованное приложение:**
+
+https://anasikus.github.io/ld-latte-automation/
+
+### 3. Instagram Direct — план интеграции Meta API
+
+Для автоматизации обработки сообщений Instagram предлагается использовать официальный Instagram API и Webhooks.
+
+**Предполагаемый процесс:**
+
+1. Пользователь отправляет сообщение в Instagram Direct.
+2. Meta отправляет событие на HTTPS Webhook.
+3. n8n проверяет подлинность запроса и извлекает данные сообщения.
+4. Сообщение сохраняется в Supabase.
+5. Workflow определяет сценарий обработки обращения.
+6. При необходимости ответ отправляется через Instagram API.
+
+**Требования для подключения:**
+
+- Профессиональный Instagram-аккаунт.
+- Приложение в Meta for Developers.
+- Настройка Instagram Login.
+- Access token и необходимые разрешения для чтения и обработки сообщений.
+- Настройка и проверка Webhooks.
+
+**Безопасность и обработка ошибок:**
+
+- Хранение токенов на серверной стороне.
+- Проверка подписей Webhook.
+- Защита от повторной обработки сообщений.
+- Контроль ошибок API и ограничений запросов.
+- Соблюдение правил Instagram Messaging.
+
+**Предлагаемые проверки:**
+
+| Сценарий | Ожидаемое поведение |
+|---|---|
+| Новое сообщение | Сохранение обращения |
+| Повторная доставка Webhook | Отсутствие дубликатов |
+| Ошибка API | Логирование и контролируемый повтор |
+| Недействительный токен | Обработка ошибки авторизации |
+| Некорректная подпись | Отклонение запроса |
+
+**Статус:** технический план. Реальная Instagram-интеграция не реализована.
+
+Документация: [Instagram API — Meta](https://www.postman.com/meta/instagram/documentation/6yqw8pt/instagram-api).
+
+## Структура проекта
+
+Основные директории React-приложения:
+
+```text
+ld-latte/
+├── public/
+├── src/
+│   ├── components/
+│   ├── lib/
+│   │   └── supabase.ts
+│   ├── pages/
+│   └── ...
+├── .env.local
+├── package.json
+└── vite.config.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+*Структура приведена в сокращённом виде.*
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Локальный запуск
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Требования:** Node.js и npm.
 
+Клонировать репозиторий:
+
+```bash
+git clone https://github.com/Anasikus/ld-latte-automation.git
+cd ld-latte-automation
 ```
+
+Установить зависимости:
+
+```bash
+npm install
+```
+
+Создать файл `.env.local` в корне проекта:
+
+```env
+VITE_SUPABASE_URL=YOUR_SUPABASE_URL
+VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_SUPABASE_PUBLISHABLE_KEY
+```
+
+Запустить приложение:
+
+```bash
+npm run dev
+```
+
+Открыть локальный адрес, который выведет Vite.
+
+Для полноценной работы с собственной базой Supabase необходимо создать таблицу `requests`, настроить Authentication и политики RLS.
+
+## Настройка Telegram-бота
+
+Для самостоятельного развёртывания потребуется:
+
+1. Создать Telegram-бота через BotFather.
+2. Подготовить проект Supabase с таблицей `services`.
+3. Настроить n8n и Telegram Trigger.
+4. Настроить HTTP Request для получения активных услуг.
+5. Настроить отправку сообщений и обработку callback-событий.
+6. Опубликовать workflow.
+
+Таблица `services` содержит идентификатор услуги, название и признак активности.
+
+**Важно:** токен Telegram-бота и другие секретные данные не должны попадать в публичный репозиторий или экспорт workflow.
+
+## Результаты
+
+В рамках тестового задания:
+
+- Разработан работающий Telegram-бот с динамическими inline-кнопками.
+- Реализована интеграция n8n с Supabase.
+- Создано и опубликовано веб-приложение с авторизацией и управлением заявками.
+- Настроено разграничение доступа к пользовательским данным.
+- Подготовлен технический план интеграции Instagram Direct.
+
+## Автор
+
+**Анастасия Давыдова**
+
+[GitHub](https://github.com/Anasikus) · [Портфолио](https://anasikus.github.io/)
