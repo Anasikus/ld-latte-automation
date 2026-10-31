@@ -27,7 +27,6 @@ export default function RequestForm({
   const { showToast } = useToast();
   const isEditing = Boolean(request);
 
-
   const [title, setTitle] = useState(request?.title ?? '');
   const [description, setDescription] = useState(
     request?.description ?? ''
@@ -150,7 +149,11 @@ export default function RequestForm({
             </>
           )}
 
-          
+          {error && (
+            <div className="form-error" role="alert">
+              {error}
+            </div>
+          )}
 
           <div className="form-actions">
             <button
