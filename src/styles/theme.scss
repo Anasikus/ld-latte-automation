@@ -1,0 +1,128 @@
+
+/* LD LATTE — blue / teal design layer.
+   Loaded last so that existing layout and mobile breakpoints remain intact. */
+:root {
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  color: #e8f7ff;
+  background: #071421;
+  color-scheme: dark;
+  font-synthesis: none;
+  --ld-bg: #071421;
+  --ld-card: #112b3d;
+  --ld-border: rgba(83, 190, 205, .26);
+  --ld-muted: #a8c6d0;
+  --ld-text: #efffff;
+  --ld-blue: #1f91cd;
+  --ld-teal: #34d8c3;
+  --ld-glow: 0 16px 36px rgba(0, 15, 32, .28);
+}
+body { background: #071421; }
+a { color: #67dfea; }
+button, input, textarea, select { font: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #50e4d0; outline-offset: 3px;
+}
+.app-layout {
+  color: var(--ld-text);
+  background:
+    radial-gradient(circle at 88% 0%, rgba(24, 181, 194, .18), transparent 30%),
+    radial-gradient(circle at 5% 34%, rgba(23, 104, 195, .22), transparent 34%),
+    linear-gradient(135deg, #071421, #0c2238 56%, #092a35);
+}
+.app-header {
+  background: rgba(9, 28, 45, .88);
+  border-bottom: 1px solid var(--ld-border);
+  backdrop-filter: blur(18px);
+}
+.brand-icon, .button-primary, .auth-card button[type=submit] {
+  background: linear-gradient(120deg, #168fd1, #1cb8c9 55%, #36d6b3);
+  color: #052238;
+  box-shadow: 0 8px 24px rgba(13, 163, 183, .18);
+}
+.button-primary:hover:not(:disabled), .auth-card button[type=submit]:hover:not(:disabled) {
+  background: linear-gradient(120deg, #29b3e1, #36d5c4);
+  transform: translateY(-1px);
+}
+.brand span, .user-email, .page-heading p, .section-heading span,
+.stat-card span, .category-label, .request-description, .request-date,
+.search-field, .services-heading p, .services-panel-heading p,
+.services-overview span, .service-id, .services-empty { color: var(--ld-muted); }
+.eyebrow, .edit-button, .services-back { color: #4de2d2; }
+.app-layout h1, .app-layout h2, .app-layout h3 { color: var(--ld-text); }
+.stats-grid .stat-card, .request-card, .services-panel, .services-overview,
+.request-modal, .service-item, .auth-card {
+  background: linear-gradient(145deg, rgba(19, 53, 74, .96), rgba(12, 36, 55, .96));
+  border: 1px solid var(--ld-border);
+  color: var(--ld-text);
+  box-shadow: var(--ld-glow);
+}
+.request-card:hover, .service-item:hover {
+  border-color: rgba(56, 217, 210, .63);
+  background: linear-gradient(145deg, #173b4f, #103347);
+}
+.stat-total, .services-overview-icon, .service-avatar {
+  background: rgba(37, 157, 219, .16); color: #62caff;
+}
+.stat-progress { background: rgba(49, 205, 225, .14); color: #6ce4f1; }
+.stat-completed { background: rgba(39, 225, 179, .14); color: #54e5bd; }
+.status-new { background: rgba(56, 150, 229, .17); color: #8accff; }
+.status-progress { background: rgba(249, 194, 93, .16); color: #ffd991; }
+.status-done { background: rgba(41, 214, 164, .17); color: #78ecc0; }
+.request-card-bottom { border-top-color: var(--ld-border); }
+.logout-button, .button-secondary, .dashboard-services-link,
+.service-action-button, .service-icon-button {
+  background: rgba(26, 71, 90, .58);
+  border: 1px solid var(--ld-border);
+  color: #ddfaff;
+}
+.logout-button:hover, .button-secondary:hover, .dashboard-services-link:hover,
+.service-action-button:hover:not(:disabled), .service-icon-button:hover:not(:disabled) {
+  background: rgba(37, 127, 149, .26); border-color: #35c6cf;
+}
+.search-field, .request-filters select, .request-form input,
+.request-form select, .request-form textarea, .services-create input,
+.service-edit-form input, .auth-card input {
+  background: #0a2337;
+  border: 1px solid rgba(92, 180, 198, .37);
+  color: #efffff;
+  box-shadow: none;
+}
+.request-filters select, .request-form select { color-scheme: dark; }
+.search-field input { color: #efffff; }
+input::placeholder, textarea::placeholder { color: #83a8b5; }
+.search-field:focus-within, .request-form input:focus, .request-form select:focus,
+.request-form textarea:focus, .services-create input:focus,
+.service-edit-form input:focus, .auth-card input:focus {
+  border-color: #45d8d0;
+  box-shadow: 0 0 0 3px rgba(52, 217, 199, .14);
+}
+.modal-overlay { background: rgba(0, 13, 26, .77); backdrop-filter: blur(6px); }
+.icon-button { color: #a6d7df; }
+.empty-state { border-color: var(--ld-border); color: var(--ld-muted); }
+.empty-state h3 { color: var(--ld-text); }
+.empty-state svg { color: #5ce6d5; }
+.service-details h3, .services-heading h1, .services-panel-heading h2,
+.services-overview strong { color: var(--ld-text); }
+.service-status.active, .service-action-button.enable, .service-action-button.save { color: #5ee6b6; }
+.service-status.inactive, .service-action-button.danger { color: #ffa3b0; }
+.service-item-disabled { background: rgba(8, 30, 47, .85); }
+.auth-page, .loading-screen {
+  color: var(--ld-text);
+  background:
+    radial-gradient(circle at 20% 18%, rgba(34, 138, 218, .25), transparent 36%),
+    radial-gradient(circle at 95% 92%, rgba(41, 211, 185, .18), transparent 37%),
+    #071421;
+}
+.auth-card { border-radius: 22px; }
+.auth-card > p, .auth-card .auth-footer { color: var(--ld-muted); }
+.auth-card a { color: #67e2de; }
+.form-error { background: rgba(213, 70, 96, .16); color: #ffbec8; }
+.form-success { background: rgba(31, 189, 151, .16); color: #a3ffda; }
+@media (max-width: 650px) {
+  .app-layout { background: linear-gradient(150deg, #071421, #0c2838); }
+  .request-card, .services-panel { box-shadow: 0 12px 26px rgba(0, 10, 20, .24); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button-primary:hover:not(:disabled) { transform: none; }
+}
