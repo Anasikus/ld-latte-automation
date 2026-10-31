@@ -9,10 +9,10 @@ import {
   Settings2,
 } from 'lucide-react';
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import { requestService } from '../services/requestService';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast';
 
 import RequestCard from '../components/RequestCard';
 import RequestForm from '../components/RequestForm';
@@ -25,7 +25,7 @@ import type {
 } from '../types/request';
 
 import { Link } from 'react-router-dom';
-import { catalogService } from '../services/catalogService';  
+import { catalogService } from '../services/catalogService';
 
 import '../styles/dashboard.scss';
 
@@ -45,7 +45,9 @@ export default function DashboardPage() {
     useState<AutomationRequest | null>(null);
 
   const [loggingOut, setLoggingOut] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminUserId, setAdminUserId] = useState<string | null>(null);
+  const currentUserId = user?.id;
+  const isAdmin = Boolean(currentUserId && adminUserId === currentUserId);
 
   useEffect(() => {
     let active = true;
@@ -77,34 +79,29 @@ export default function DashboardPage() {
   }, [user?.id, showToast]);
 
   useEffect(() => {
-    let active = true;
+    if (!currentUserId) return;
 
-    setIsAdmin(false);
+    let active = true;
 
     async function checkAdmin() {
       try {
         const admin = await catalogService.isAdmin();
 
         if (active) {
-          setIsAdmin(admin);
+          setAdminUserId(admin ? currentUserId : null);
         }
       } catch (err) {
         console.error('Не удалось проверить права администратора', err);
-
-        if (active) {
-          setIsAdmin(false);
-        }
+        if (active) setAdminUserId(null);
       }
     }
 
-    if (user) {
-      void checkAdmin();
-    }
+    void checkAdmin();
 
     return () => {
       active = false;
     };
-  }, [user?.id]);
+  }, [currentUserId]);
 
   const filteredRequests = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -135,13 +132,11 @@ export default function DashboardPage() {
   function openCreateForm() {
     setEditingRequest(null);
     setFormOpen(true);
-    ;
   }
 
   function openEditForm(request: AutomationRequest) {
     setEditingRequest(request);
     setFormOpen(true);
-    ;
   }
 
   function closeForm() {
