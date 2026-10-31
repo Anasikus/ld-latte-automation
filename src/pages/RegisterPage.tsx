@@ -1,16 +1,18 @@
 
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { useToast } from '../context/toast';
 
 export default function RegisterPage() {
+  const { showToast } = useToast();
   const { user, signUp } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+
   const [loading, setLoading] = useState(false);
 
   if (user) {
@@ -23,7 +25,6 @@ export default function RegisterPage() {
     if (loading) return;
 
     setError('');
-    setSuccess('');
 
     if (password.length < 6) {
       setError('Пароль должен содержать минимум 6 символов');
@@ -34,15 +35,13 @@ export default function RegisterPage() {
 
     try {
       await signUp(email.trim(), password);
-      setSuccess(
-        'Регистрация выполнена. Если требуется подтверждение почты, проверьте письмо.'
-      );
-      } catch (err) {
+      showToast('Регистрация выполнена. Если требуется подтверждение почты, проверьте письмо.', 'success');
+    } catch (err) {
         console.error('Ошибка регистрации:', err);
-        setError(getErrorMessage(err, 'Не удалось зарегистрироваться'));
-      } finally {
+        showToast(getErrorMessage(err, 'Не удалось зарегистрироваться'), 'error');
+    } finally {
         setLoading(false);
-      }
+    }
   }
 
   return (
@@ -75,7 +74,6 @@ export default function RegisterPage() {
         />
 
         {error && <div className="form-error" role="alert">{error}</div>}
-        {success && <div className="form-success" role="status">{success}</div>}
 
         <button type="submit" disabled={loading}>
           {loading ? 'Регистрация...' : 'Зарегистрироваться'}

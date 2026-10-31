@@ -1,15 +1,17 @@
 
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { useToast } from '../context/toast';
 
 export default function LoginPage() {
+  const { showToast } = useToast();
   const { user, signIn } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+
   const [loading, setLoading] = useState(false);
 
   if (user) {
@@ -21,14 +23,14 @@ export default function LoginPage() {
 
     if (loading) return;
 
-    setError('');
+    
     setLoading(true);
 
     try {
       await signIn(email.trim(), password);
       } catch (err) {
         console.error('Ошибка входа:', err);
-        setError(getErrorMessage(err, 'Не удалось войти в аккаунт'));
+        showToast(getErrorMessage(err, 'Не удалось войти в аккаунт'), 'error');
       } finally {
         setLoading(false);
       }
@@ -62,7 +64,7 @@ export default function LoginPage() {
           placeholder="Введите пароль"
         />
 
-        {error && <div className="form-error" role="alert">{error}</div>}
+        
 
         <button type="submit" disabled={loading}>
           {loading ? 'Выполняется вход...' : 'Войти'}
