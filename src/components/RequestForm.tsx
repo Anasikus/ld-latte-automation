@@ -1,6 +1,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { X } from 'lucide-react';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 import {
   REQUEST_CATEGORIES,
@@ -58,11 +59,8 @@ export default function RequestForm({
         status: isEditing ? status : 'Новая',
       });
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Не удалось сохранить заявку'
-      );
+      console.error('Ошибка сохранения заявки:', err);
+      setError(getErrorMessage(err, 'Не удалось сохранить заявку'));
     } finally {
       setSaving(false);
     }

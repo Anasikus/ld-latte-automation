@@ -2,6 +2,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function LoginPage() {
   const { user, signIn } = useAuth();
@@ -25,15 +26,12 @@ export default function LoginPage() {
 
     try {
       await signIn(email.trim(), password);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Не удалось войти в аккаунт'
-      );
-    } finally {
-      setLoading(false);
-    }
+      } catch (err) {
+        console.error('Ошибка входа:', err);
+        setError(getErrorMessage(err, 'Не удалось войти в аккаунт'));
+      } finally {
+        setLoading(false);
+      }
   }
 
   return (

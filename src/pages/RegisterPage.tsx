@@ -2,6 +2,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function RegisterPage() {
   const { user, signUp } = useAuth();
@@ -36,15 +37,12 @@ export default function RegisterPage() {
       setSuccess(
         'Регистрация выполнена. Если требуется подтверждение почты, проверьте письмо.'
       );
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Не удалось зарегистрироваться'
-      );
-    } finally {
-      setLoading(false);
-    }
+      } catch (err) {
+        console.error('Ошибка регистрации:', err);
+        setError(getErrorMessage(err, 'Не удалось зарегистрироваться'));
+      } finally {
+        setLoading(false);
+      }
   }
 
   return (
