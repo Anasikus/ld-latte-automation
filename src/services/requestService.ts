@@ -38,6 +38,18 @@ export const requestService = {
     return data as AutomationRequest;
   },
 
+  async remove(id: string): Promise<void> {
+    const { data, error } = await supabase
+      .from('requests')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) throw new Error('Заявка не найдена или нет прав на удаление');
+  },
+
   async update(
     id: string,
     form: RequestFormData

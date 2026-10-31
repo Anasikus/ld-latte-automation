@@ -10,6 +10,7 @@ import {
   Power,
   LoaderCircle,
   Layers3,
+  Trash2,
 } from 'lucide-react';
 
 import {
@@ -18,6 +19,7 @@ import {
 } from '../services/catalogService';
 
 import { getErrorMessage } from '../utils/getErrorMessage';
+import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog';
 import { useToast } from '../context/toast';
 
 import '../styles/services.scss';
@@ -29,6 +31,8 @@ export default function ServicesPage() {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deletingService, setDeletingService] = useState<CatalogService | null>(null);
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
@@ -148,6 +152,23 @@ export default function ServicesPage() {
     await updateService(service.id, {
       active: !service.active,
     });
+  }
+
+  async function handleDeleteService() {
+    if (!isAdmin || !deletingService || deleting) return;
+
+    const serviceId = deletingService.id;
+    setDeleting(true);
+    try {
+      await catalogService.remove(serviceId);
+      setServices((previous) => previous.filter((item) => item.id !== serviceId));
+      setDeletingService(null);
+      showToast('Услуга удалена', 'success');
+    } catch (err) {
+      showToast(getErrorMessage(err, 'Не удалось удалить услугу'), 'error');
+    } finally {
+      setDeleting(false);
+    }
   }
 
   const activeCount = services.filter((service) => service.active).length;
@@ -359,6 +380,16 @@ export default function ServicesPage() {
                             <Power size={16} />
                             {service.active ? 'Отключить' : 'Включить'}
                           </button>
+                          <button
+                            type="button"
+                            className="service-action-button danger"
+                            disabled={saving || deleting}
+                            onClick={() => setDeletingService(service)}
+                            aria-label={`Удалить услугу «${service.name}»`}
+                          >
+                            <Trash2 size={16} aria-hidden="true" />
+                            Удалить
+                          </button>
                         </div>
                       )}
                     </article>
@@ -369,6 +400,15 @@ export default function ServicesPage() {
           </>
         )}
       </main>
+      {isAdmin && deletingService && (
+        <ConfirmDeleteDialog
+          itemType="услугу"
+          itemName={deletingService.name}
+          busy={deleting}
+          onCancel={() => setDeletingService(null)}
+          onConfirm={() => void handleDeleteService()}
+        />
+      )}
     </div>
   );
 }

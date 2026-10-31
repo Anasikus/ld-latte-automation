@@ -43,6 +43,18 @@ export const catalogService = {
     return data;
   },
 
+  async remove(id: number): Promise<void> {
+    const { data, error } = await supabase
+      .from('services')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) throw new Error('Услуга не найдена или нет прав на удаление');
+  },
+
   async update(
     id: number,
     changes: Partial<Pick<CatalogService, 'name' | 'active'>>

@@ -55,9 +55,9 @@ revoke all on public.requests from anon, authenticated;
 revoke all on public.services from anon, authenticated;
 
 grant usage on schema public to anon, authenticated;
-grant select, insert, update on public.requests to authenticated;
+grant select, insert, update, delete on public.requests to authenticated;
 grant select on public.services to anon, authenticated;
-grant insert, update on public.services to authenticated;
+grant insert, update, delete on public.services to authenticated;
 grant usage on sequence public.services_id_seq to authenticated;
 
 revoke all on function public.is_app_admin() from public, anon, authenticated;
@@ -76,6 +76,10 @@ create policy "Users can update own requests"
     using ((select auth.uid()) = user_id)
     with check ((select auth.uid()) = user_id);
 
+create policy "Users can delete own requests"
+    on public.requests for delete to authenticated
+    using (user_id = (select auth.uid()));
+
 create policy "Allow reading active services"
     on public.services for select to anon, authenticated
     using (active = true);
@@ -92,6 +96,10 @@ create policy "Admins can update services"
     on public.services for update to authenticated
     using ((select public.is_app_admin()))
     with check ((select public.is_app_admin()));
+
+create policy "Admins can delete services"
+    on public.services for delete to authenticated
+    using ((select public.is_app_admin()));
 
 commit;
 
