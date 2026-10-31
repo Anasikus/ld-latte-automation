@@ -11,6 +11,7 @@ import {
 
 import { useAuth } from '../context/AuthContext';
 import { requestService } from '../services/requestService';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 import RequestCard from '../components/RequestCard';
 import RequestForm from '../components/RequestForm';
@@ -62,9 +63,7 @@ export default function DashboardPage() {
       } catch (err) {
         if (active) {
           setError(
-            err instanceof Error
-              ? err.message
-              : 'Не удалось загрузить заявки'
+            getErrorMessage(err, 'Не удалось загрузить заявки')
           );
         }
       } finally {
@@ -193,9 +192,7 @@ export default function DashboardPage() {
       await signOut();
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Не удалось выйти из аккаунта'
+        getErrorMessage(err, 'Не удалось выйти из аккаунта')
       );
     } finally {
       setLoggingOut(false);

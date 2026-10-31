@@ -201,7 +201,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst callback = $('Telegram Trigger').first().json.callback_query;\n\nconst service = $input.all()\n  .map(item => item.json)\n  .find(item =>\n    item.id != null &&\n    typeof item.name === 'string'\n  );\n\nlet text;\n\nif (service) {\n  text = `Вы выбрали услугу: ${service.name}`;\n} else {\n  text = 'Эта услуга больше недоступна. Отправьте /start для обновления списка.';\n}\n\n// Ограничение Telegram для текста callback-уведомления\nif (text.length > 200) {\n  text = text.slice(0, 197) + '...';\n}\n\nreturn [{\n  json: {\n    callbackId: callback.id,\n    text\n  }\n}];\n"
+        "jsCode": "const callback = $('Telegram Trigger').first().json.callback_query;\nconst chatId = callback.message?.chat?.id;\nif (!chatId) throw new Error('Не удалось определить chatId');\n\nconst service = $input.all()\n  .map(item => item.json)\n  .find(item => item.id != null && typeof item.name === 'string');\n\nconst messageText = service\n  ? `Вы выбрали услугу: ${service.name}`\n  : 'Эта услуга больше недоступна. Отправьте /start для обновления списка.';\n\nreturn [{\n  json: {\n    callbackId: callback.id,\n    chatId,\n    messageText,\n    notification: service ? 'Выбор обработан' : 'Услуга недоступна'\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -223,7 +223,7 @@
             {}
           ]
         },
-        "jsonBody": "={{ JSON.stringify({\n  callback_query_id: $json.callbackId,\n  text: $json.text,\n  show_alert: true\n}) }}\n",
+        "jsonBody": "={{ JSON.stringify({\n  callback_query_id: $json.callbackId,\n  text: $json.notification,\n  show_alert: false\n}) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -260,6 +260,29 @@
       ],
       "id": "7917ad8c-e744-4e48-95ad-2e9e1eb1965b",
       "name": "Prepare Callback Error"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/botYOUR_TOKEN/sendMessage",
+        "sendBody": true,
+        "specifyBody": "=json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={{ JSON.stringify({\n  chat_id: $json.chatId,\n  text: $json.messageText\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        880,
+        320
+      ],
+      "id": "20c17de4-9aec-49cc-9479-5436f9a1f2ec",
+      "name": "Send Selected Service"
     }
   ],
   "connections": {
@@ -344,6 +367,11 @@
         [
           {
             "node": "Answer Callback",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Selected Service",
             "type": "main",
             "index": 0
           }
