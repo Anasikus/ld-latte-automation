@@ -1,9 +1,9 @@
 
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/auth';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast';
 
 export default function LoginPage() {
   const { showToast } = useToast();
