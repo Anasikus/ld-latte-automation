@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
+import '../styles/deletion.scss';
 
 interface Props {
   itemType: 'заявку' | 'услугу';
