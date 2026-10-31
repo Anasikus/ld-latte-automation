@@ -25,7 +25,6 @@ export default function RegisterPage() {
     if (loading) return;
 
     setError('');
-    ;
 
     if (password.length < 6) {
       setError('Пароль должен содержать минимум 6 символов');
@@ -36,15 +35,13 @@ export default function RegisterPage() {
 
     try {
       await signUp(email.trim(), password);
-      showToast(
-        'Регистрация выполнена. Если требуется подтверждение почты, проверьте письмо.'
-      , 'success');
-      } catch (err) {
+      showToast('Регистрация выполнена. Если требуется подтверждение почты, проверьте письмо.', 'success');
+    } catch (err) {
         console.error('Ошибка регистрации:', err);
         showToast(getErrorMessage(err, 'Не удалось зарегистрироваться'), 'error');
-      } finally {
+    } finally {
         setLoading(false);
-      }
+    }
   }
 
   return (
@@ -76,8 +73,7 @@ export default function RegisterPage() {
           placeholder="Минимум 6 символов"
         />
 
-        
-        
+        {error && <div className="form-error" role="alert">{error}</div>}
 
         <button type="submit" disabled={loading}>
           {loading ? 'Регистрация...' : 'Зарегистрироваться'}
