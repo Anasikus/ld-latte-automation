@@ -18,17 +18,17 @@ import {
 } from '../services/catalogService';
 
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { useToast } from '../context/ToastContext';
 
 import '../styles/services.scss';
 
 export default function ServicesPage() {
+  const { showToast } = useToast();
   const [services, setServices] = useState<CatalogService[]>([]);
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
@@ -49,9 +49,7 @@ export default function ServicesPage() {
         }
       } catch (err) {
         if (active) {
-          setError(
-            getErrorMessage(err, 'Не удалось загрузить каталог')
-          );
+          showToast(getErrorMessage(err, 'Не удалось загрузить каталог'), 'error');
         }
       } finally {
         if (active) setLoading(false);
@@ -63,12 +61,9 @@ export default function ServicesPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [showToast]);
 
-  function clearMessages() {
-    setError('');
-    setNotice('');
-  }
+  
 
   async function addService() {
     const trimmed = name.trim();
@@ -76,7 +71,7 @@ export default function ServicesPage() {
     if (!trimmed || saving) return;
 
     setSaving(true);
-    clearMessages();
+    
 
     try {
       const created = await catalogService.create(trimmed);
@@ -86,18 +81,16 @@ export default function ServicesPage() {
       );
 
       setName('');
-      setNotice('Услуга успешно добавлена');
+      showToast('Услуга успешно добавлена', 'success');
     } catch (err) {
-      setError(
-        getErrorMessage(err, 'Не удалось добавить услугу')
-      );
+      showToast(getErrorMessage(err, 'Не удалось добавить услугу'), 'error');
     } finally {
       setSaving(false);
     }
   }
 
   function startEditing(service: CatalogService) {
-    clearMessages();
+    
     setEditingId(service.id);
     setEditingName(service.name);
   }
@@ -114,7 +107,7 @@ export default function ServicesPage() {
     if (saving) return false;
 
     setSaving(true);
-    clearMessages();
+    
 
     try {
       const updated = await catalogService.update(id, changes);
@@ -125,12 +118,10 @@ export default function ServicesPage() {
         )
       );
 
-      setNotice('Изменения сохранены');
+      showToast('Изменения сохранены', 'success');
       return true;
     } catch (err) {
-      setError(
-        getErrorMessage(err, 'Не удалось сохранить изменения')
-      );
+      showToast(getErrorMessage(err, 'Не удалось сохранить изменения'), 'error');
       return false;
     } finally {
       setSaving(false);
@@ -170,7 +161,7 @@ export default function ServicesPage() {
     );
   }
 
-  if (!isAdmin && !error) {
+  if (!isAdmin) {
     return <Navigate to="/" replace />;
   }
 
@@ -194,17 +185,9 @@ export default function ServicesPage() {
           </div>
         </div>
 
-        {error && (
-          <div className="form-error" role="alert">
-            {error}
-          </div>
-        )}
+        
 
-        {notice && (
-          <div className="form-success" role="status">
-            {notice}
-          </div>
-        )}
+        
 
         {isAdmin && (
           <>
