@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { requestService } from '../services/requestService';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { useToast } from '../context/ToastContext';
 
 import RequestCard from '../components/RequestCard';
 import RequestForm from '../components/RequestForm';
@@ -29,12 +30,11 @@ import { catalogService } from '../services/catalogService';
 import '../styles/dashboard.scss';
 
 export default function DashboardPage() {
+  const { showToast } = useToast();
   const { user, signOut } = useAuth();
 
   const [requests, setRequests] = useState<AutomationRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] =
@@ -52,7 +52,7 @@ export default function DashboardPage() {
 
     async function loadRequests() {
       setLoading(true);
-      setError('');
+      
 
       try {
         const data = await requestService.getAll();
@@ -62,9 +62,7 @@ export default function DashboardPage() {
         }
       } catch (err) {
         if (active) {
-          setError(
-            getErrorMessage(err, 'Не удалось загрузить заявки')
-          );
+          showToast(getErrorMessage(err, 'Не удалось загрузить заявки'), 'error');
         }
       } finally {
         if (active) setLoading(false);
@@ -76,7 +74,7 @@ export default function DashboardPage() {
     return () => {
       active = false;
     };
-  }, [user?.id]);
+  }, [user?.id, showToast]);
 
   useEffect(() => {
     let active = true;
@@ -137,13 +135,13 @@ export default function DashboardPage() {
   function openCreateForm() {
     setEditingRequest(null);
     setFormOpen(true);
-    setNotice('');
+    ;
   }
 
   function openEditForm(request: AutomationRequest) {
     setEditingRequest(request);
     setFormOpen(true);
-    setNotice('');
+    ;
   }
 
   function closeForm() {
@@ -168,7 +166,7 @@ export default function DashboardPage() {
         )
       );
 
-      setNotice('Заявка успешно обновлена');
+      showToast('Заявка успешно обновлена', 'success');
     } else {
       const created = await requestService.create(
         user.id,
@@ -176,7 +174,7 @@ export default function DashboardPage() {
       );
 
       setRequests((previous) => [created, ...previous]);
-      setNotice('Заявка успешно создана');
+      showToast('Заявка успешно создана', 'success');
     }
 
     closeForm();
@@ -186,14 +184,12 @@ export default function DashboardPage() {
     if (loggingOut) return;
 
     setLoggingOut(true);
-    setError('');
+    
 
     try {
       await signOut();
     } catch (err) {
-      setError(
-        getErrorMessage(err, 'Не удалось выйти из аккаунта')
-      );
+      showToast(getErrorMessage(err, 'Не удалось выйти из аккаунта'), 'error');
     } finally {
       setLoggingOut(false);
     }
@@ -260,17 +256,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {error && (
-          <div className="form-error" role="alert">
-            {error}
-          </div>
-        )}
+        
 
-        {notice && (
-          <div className="form-success" role="status">
-            {notice}
-          </div>
-        )}
+        
 
         <section className="stats-grid" aria-label="Статистика заявок">
           <div className="stat-card">
