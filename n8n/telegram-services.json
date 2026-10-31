@@ -263,23 +263,19 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://api.telegram.org/botYOUR_TOKEN/sendMessage",
-        "sendBody": true,
-        "specifyBody": "=json",
-        "bodyParameters": {
-          "parameters": [
-            {}
-          ]
-        },
-        "jsonBody": "={{ JSON.stringify({\n  chat_id: $json.chatId,\n  text: $json.messageText\n}) }}",
-        "options": {}
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $('Telegram Trigger').first().json.callback_query.message.chat.id }}",
+        "text": "={{ $('Prepare Callback Answer').first().json.messageText }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
       "position": [
-        880,
-        320
+        1088,
+        192
       ],
       "id": "20c17de4-9aec-49cc-9479-5436f9a1f2ec",
       "name": "Send Selected Service"
@@ -369,11 +365,6 @@
             "node": "Answer Callback",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Send Selected Service",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -394,6 +385,17 @@
         [
           {
             "node": "Answer Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Callback": {
+      "main": [
+        [
+          {
+            "node": "Send Selected Service",
             "type": "main",
             "index": 0
           }
