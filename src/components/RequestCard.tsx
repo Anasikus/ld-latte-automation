@@ -1,13 +1,17 @@
 
-import { CalendarDays, Pencil } from 'lucide-react';
+import { CalendarDays, Pencil, Trash2 } from 'lucide-react';
 import type { AutomationRequest } from '../types/request';
 
 interface Props {
   request: AutomationRequest;
   onEdit: (request: AutomationRequest) => void;
+  onDelete?: (request: AutomationRequest) => void;
+  deleteDisabled?: boolean;
 }
 
-export default function RequestCard({ request, onEdit }: Props) {
+export default function RequestCard({
+  request, onEdit, onDelete, deleteDisabled = false,
+}: Props) {
   const statusClass = {
     'Новая': 'status-new',
     'В работе': 'status-progress',
@@ -41,14 +45,28 @@ export default function RequestCard({ request, onEdit }: Props) {
           {createdAt}
         </span>
 
-        <button
-          type="button"
-          className="edit-button"
+        <div className="request-card-actions">
+          <button
+            type="button"
+            className="edit-button"
           onClick={() => onEdit(request)}
         >
           <Pencil size={15} />
           Изменить
-        </button>
+          </button>
+          {onDelete && (
+            <button
+              type="button"
+              className="delete-button"
+              disabled={deleteDisabled}
+              aria-label={`Удалить заявку «${request.title}»`}
+              onClick={() => onDelete(request)}
+            >
+              <Trash2 size={16} aria-hidden="true" />
+              Удалить
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );
