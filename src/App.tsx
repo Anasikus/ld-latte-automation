@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import ServicesPage from './pages/ServicesPage';
 
 function AppRoutes() {
   const { loading } = useAuth();
@@ -27,6 +28,7 @@ function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<DashboardPage />} />
+        <Route path="/services" element={<ServicesPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

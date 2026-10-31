@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Clock3,
   CheckCircle2,
+  Settings2,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -20,6 +21,9 @@ import type {
   RequestFormData,
   RequestStatus,
 } from '../types/request';
+
+import { Link } from 'react-router-dom';
+import { catalogService } from '../services/catalogService';  
 
 import '../styles/dashboard.scss';
 
@@ -40,6 +44,7 @@ export default function DashboardPage() {
     useState<AutomationRequest | null>(null);
 
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -68,6 +73,36 @@ export default function DashboardPage() {
     }
 
     void loadRequests();
+
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
+
+  useEffect(() => {
+    let active = true;
+
+    setIsAdmin(false);
+
+    async function checkAdmin() {
+      try {
+        const admin = await catalogService.isAdmin();
+
+        if (active) {
+          setIsAdmin(admin);
+        }
+      } catch (err) {
+        console.error('Не удалось проверить права администратора', err);
+
+        if (active) {
+          setIsAdmin(false);
+        }
+      }
+    }
+
+    if (user) {
+      void checkAdmin();
+    }
 
     return () => {
       active = false;
@@ -206,14 +241,26 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <button
-            type="button"
-            className="button-primary create-button"
-            onClick={openCreateForm}
-          >
-            <Plus size={19} />
-            Новая заявка
-          </button>
+          <div className="dashboard-heading-actions">
+            {isAdmin && (
+              <Link
+                to="/services"
+                className="dashboard-services-link"
+              >
+                <Settings2 size={18} />
+                Управление услугами
+              </Link>
+            )}
+
+            <button
+              type="button"
+              className="button-primary create-button"
+              onClick={openCreateForm}
+            >
+              <Plus size={19} />
+              Новая заявка
+            </button>
+          </div>
         </div>
 
         {error && (
