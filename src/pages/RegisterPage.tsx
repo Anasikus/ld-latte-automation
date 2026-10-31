@@ -41,7 +41,7 @@ export default function RegisterPage() {
       , 'success');
       } catch (err) {
         console.error('Ошибка регистрации:', err);
-        setError(getErrorMessage(err, 'Не удалось зарегистрироваться'));
+        showToast(getErrorMessage(err, 'Не удалось зарегистрироваться'), 'error');
       } finally {
         setLoading(false);
       }
