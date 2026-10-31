@@ -1,16 +1,13 @@
 import {
-  createContext, useCallback, useContext, useEffect,
+  useCallback, useEffect,
   useMemo, useRef, useState, type ReactNode,
 } from 'react';
 import { AlertCircle, CheckCircle2, Info, X } from 'lucide-react';
 import '../styles/toast.scss';
 
-type ToastTone = 'success' | 'error' | 'info';
+import { ToastContext, type ToastTone } from './toast';
+
 interface Toast { id: number; tone: ToastTone; message: string }
-interface ToastContextValue {
-  showToast: (message: string, tone?: ToastTone) => void;
-}
-const ToastContext = createContext<ToastContextValue | null>(null);
 const toastLabels: Record<ToastTone, string> = {
   success: 'Успешно', error: 'Ошибка', info: 'Уведомление',
 };
@@ -63,9 +60,4 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       </div>
     </ToastContext.Provider>
   );
-}
-export function useToast() {
-  const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error('useToast должен быть внутри ToastProvider');
-  return ctx;
 }
