@@ -88,7 +88,7 @@ export default function DashboardPage() {
         const admin = await catalogService.isAdmin();
 
         if (active) {
-          setAdminUserId(admin ? currentUserId : null);
+          setAdminUserId(admin ? (currentUserId ?? null) : null);
         }
       } catch (err) {
         console.error('Не удалось проверить права администратора', err);
