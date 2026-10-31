@@ -15,6 +15,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { useToast } from '../context/toast';
 
 import RequestCard from '../components/RequestCard';
+import ConfirmDeleteDialog from '../components/ConfirmDeleteDialog';
 import RequestForm from '../components/RequestForm';
 import RequestFilters from '../components/RequestFilters';
 
@@ -45,6 +46,8 @@ export default function DashboardPage() {
     useState<AutomationRequest | null>(null);
 
   const [loggingOut, setLoggingOut] = useState(false);
+  const [deletingRequest, setDeletingRequest] = useState<AutomationRequest | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [adminUserId, setAdminUserId] = useState<string | null>(null);
   const currentUserId = user?.id;
   const isAdmin = Boolean(currentUserId && adminUserId === currentUserId);
@@ -173,6 +176,24 @@ export default function DashboardPage() {
     }
 
     closeForm();
+  }
+
+  async function handleDeleteRequest() {
+    if (!isAdmin || !deletingRequest || deleting) return;
+
+    setDeleting(true);
+    try {
+      await requestService.remove(deletingRequest.id);
+      setRequests((previous) =>
+        previous.filter((item) => item.id !== deletingRequest.id)
+      );
+      setDeletingRequest(null);
+      showToast('Заявка удалена', 'success');
+    } catch (err) {
+      showToast(getErrorMessage(err, 'Не удалось удалить заявку'), 'error');
+    } finally {
+      setDeleting(false);
+    }
   }
 
   async function handleLogout() {
@@ -325,12 +346,24 @@ export default function DashboardPage() {
                   key={request.id}
                   request={request}
                   onEdit={openEditForm}
+                  onDelete={isAdmin ? setDeletingRequest : undefined}
+                  deleteDisabled={deleting}
                 />
               ))}
             </div>
           )}
         </section>
       </main>
+
+      {isAdmin && deletingRequest && (
+        <ConfirmDeleteDialog
+          itemType="заявку"
+          itemName={deletingRequest.title}
+          busy={deleting}
+          onCancel={() => setDeletingRequest(null)}
+          onConfirm={() => void handleDeleteRequest()}
+        />
+      )}
 
       {formOpen && (
         <RequestForm
