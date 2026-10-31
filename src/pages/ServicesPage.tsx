@@ -17,6 +17,8 @@ import {
   type CatalogService,
 } from '../services/catalogService';
 
+import { getErrorMessage } from '../utils/getErrorMessage';
+
 import '../styles/services.scss';
 
 export default function ServicesPage() {
@@ -48,9 +50,7 @@ export default function ServicesPage() {
       } catch (err) {
         if (active) {
           setError(
-            err instanceof Error
-              ? err.message
-              : 'Не удалось загрузить каталог'
+            getErrorMessage(err, 'Не удалось загрузить каталог')
           );
         }
       } finally {
@@ -89,9 +89,7 @@ export default function ServicesPage() {
       setNotice('Услуга успешно добавлена');
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Не удалось добавить услугу'
+        getErrorMessage(err, 'Не удалось добавить услугу')
       );
     } finally {
       setSaving(false);
@@ -131,9 +129,7 @@ export default function ServicesPage() {
       return true;
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Не удалось сохранить изменения'
+        getErrorMessage(err, 'Не удалось сохранить изменения')
       );
       return false;
     } finally {

@@ -81,7 +81,7 @@ npm run dev
 2. Импортируйте [`n8n/telegram-services.json`](../n8n/telegram-services.json) в n8n.
 3. Подключите Telegram Credentials к Telegram Trigger.
 4. В обоих узлах Supabase REST API укажите URL проекта и Publishable Key.
-5. В узлах `sendMessage` и `answerCallbackQuery` настройте собственный токен Telegram Bot API.
+5. В HTTP-узлах `sendMessage` и `answerCallbackQuery` укажите свой токен Telegram Bot API; в узле Telegram `Send Selected Service` выберите Telegram Credentials. В `Additional Fields` для него отключена `Append n8n Attribution`.
 6. Проверьте параметры JSON Body.
 7. Опубликуйте workflow.
 
@@ -90,3 +90,11 @@ npm run dev
 Для самостоятельной работы Telegram Trigger необходим доступный извне HTTPS webhook n8n.
 
 **Безопасность:** не публикуйте реальные токены Telegram, секретные ключи Supabase или файлы с приватными данными.
+### Быстрая проверка бота
+
+1. Отправьте `/start` и сравните число кнопок с числом активных услуг.
+2. Выберите кнопку: бот должен отправить название услуги в чат.
+3. Переименуйте, добавьте и отключите услугу. Повторный `/start` должен показать актуальные данные.
+4. Отключите все услуги — бот должен показать сообщение без клавиатуры.
+
+Для импорта используйте актуальный файл [`n8n/telegram-services.json`](../n8n/telegram-services.json). Заполнители URL и токенов заменяйте в собственной среде n8n, без публикации секретов в Git.
