@@ -22,6 +22,10 @@ React · TypeScript · Vite · SCSS · Supabase · PostgreSQL · n8n · Telegram
 
 **[Открыть каталог всей документации](docs/README.md)**
 
+### Использование AI
+
+[Что помог сделать ChatGPT и как проверялся результат](docs/ai-usage.md).
+
 ## Автор
 
 Анастасия Давыдова · [GitHub](https://github.com/Anasikus) · [Портфолио](https://anasikus.github.io/)
