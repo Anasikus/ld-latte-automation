@@ -81,7 +81,7 @@ npm run dev
 2. Импортируйте [`n8n/telegram-services.json`](../n8n/telegram-services.json) в n8n.
 3. Подключите Telegram Credentials к Telegram Trigger.
 4. В обоих узлах Supabase REST API укажите URL проекта и Publishable Key.
-5. Во всех узлах `sendMessage` (включая ответ с выбранной услугой) и `answerCallbackQuery` настройте собственный токен Telegram Bot API.
+5. В HTTP-узлах `sendMessage` и `answerCallbackQuery` укажите свой токен Telegram Bot API; в узле Telegram `Send Selected Service` выберите Telegram Credentials. В `Additional Fields` для него отключена `Append n8n Attribution`.
 6. Проверьте параметры JSON Body.
 7. Опубликуйте workflow.
 
