@@ -49,10 +49,10 @@ export default function RequestCard({
           <button
             type="button"
             className="edit-button"
-          onClick={() => onEdit(request)}
-        >
-          <Pencil size={15} />
-          Изменить
+            onClick={() => onEdit(request)}
+          >
+            <Pencil size={15} />
+            Изменить
           </button>
           {onDelete && (
             <button
