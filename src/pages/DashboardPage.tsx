@@ -181,11 +181,12 @@ export default function DashboardPage() {
   async function handleDeleteRequest() {
     if (!isAdmin || !deletingRequest || deleting) return;
 
+    const requestId = deletingRequest.id;
     setDeleting(true);
     try {
-      await requestService.remove(deletingRequest.id);
+      await requestService.remove(requestId);
       setRequests((previous) =>
-        previous.filter((item) => item.id !== deletingRequest.id)
+        previous.filter((item) => item.id !== requestId)
       );
       setDeletingRequest(null);
       showToast('Заявка удалена', 'success');
