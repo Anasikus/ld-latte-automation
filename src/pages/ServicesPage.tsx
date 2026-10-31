@@ -18,7 +18,7 @@ import {
 } from '../services/catalogService';
 
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/toast';
 
 import '../styles/services.scss';
 
