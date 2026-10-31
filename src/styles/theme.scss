@@ -126,3 +126,128 @@ input::placeholder, textarea::placeholder { color: #83a8b5; }
 @media (prefers-reduced-motion: reduce) {
   .button-primary:hover:not(:disabled) { transform: none; }
 }
+
+/* Readability: larger text in requests and services */
+.app-layout .request-card h3 {
+  font-size: 20px;
+  line-height: 1.4;
+  margin-top: 18px;
+}
+.app-layout .request-card .request-description {
+  font-size: 16px;
+  line-height: 1.65;
+}
+.app-layout .request-card .category-label {
+  font-size: 14px;
+}
+.app-layout .request-card .status-badge {
+  font-size: 13px;
+  padding: 7px 11px;
+}
+.app-layout .request-card .request-date,
+.app-layout .request-card .edit-button {
+  font-size: 14px;
+}
+.app-layout .request-card-bottom {
+  flex-wrap: wrap;
+  row-gap: 12px;
+}
+.request-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.request-card-actions .edit-button {
+  padding: 8px 0;
+}
+.app-layout .service-details h3 {
+  font-size: 19px;
+  line-height: 1.45;
+}
+.app-layout .service-id {
+  font-size: 12px;
+}
+.app-layout .service-status {
+  font-size: 14px;
+}
+.app-layout .service-action-button {
+  font-size: 14px;
+  min-height: 42px;
+}
+.app-layout .services-panel-heading p,
+.app-layout .services-overview span {
+  font-size: 15px;
+}
+.app-layout .service-item {
+  gap: 16px;
+}
+.app-layout .service-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(251, 101, 129, .11);
+  border: 1px solid rgba(255, 142, 155, .3);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #ffacb8;
+  font-size: 14px;
+  font-weight: 650;
+}
+.delete-button:hover:not(:disabled),
+.app-layout .service-action-button.danger:hover:not(:disabled) {
+  background: rgba(244, 95, 125, .22);
+  border-color: #ff8b9a;
+}
+.delete-button:disabled { opacity: .55; cursor: not-allowed; }
+.button-danger {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(255, 136, 150, .6);
+  border-radius: 10px;
+  padding: 12px 17px;
+  background: linear-gradient(120deg, #b93e5b, #dd5a74);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.button-danger:hover:not(:disabled) {
+  background: linear-gradient(120deg, #ca4865, #f16d82);
+}
+.button-danger:disabled { cursor: wait; opacity: .65; }
+.confirm-delete-modal {
+  max-width: 460px;
+}
+.confirm-delete-modal .modal-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffadba;
+}
+.confirm-delete-modal > p {
+  color: #bfdbe3;
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.confirm-delete-modal > p strong {
+  color: #fff;
+}
+@media (max-width: 650px) {
+  .app-layout .request-card h3 { font-size: 19px; }
+  .app-layout .service-details h3 { font-size: 18px; }
+  .app-layout .service-actions {
+    justify-content: flex-start;
+  }
+  .confirm-delete-modal .form-actions {
+    flex-wrap: wrap;
+  }
+}
