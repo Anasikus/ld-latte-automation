@@ -2,6 +2,7 @@
 import { useState, type FormEvent } from 'react';
 import { X } from 'lucide-react';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { useToast } from '../context/ToastContext';
 
 import {
   REQUEST_CATEGORIES,
@@ -23,7 +24,9 @@ export default function RequestForm({
   onSave,
   onClose,
 }: Props) {
+  const { showToast } = useToast();
   const isEditing = Boolean(request);
+  const { showToast } = useToast();
 
   const [title, setTitle] = useState(request?.title ?? '');
   const [description, setDescription] = useState(
@@ -60,7 +63,7 @@ export default function RequestForm({
       });
     } catch (err) {
       console.error('Ошибка сохранения заявки:', err);
-      setError(getErrorMessage(err, 'Не удалось сохранить заявку'));
+      showToast(getErrorMessage(err, 'Не удалось сохранить заявку'), 'error');
     } finally {
       setSaving(false);
     }
@@ -147,11 +150,7 @@ export default function RequestForm({
             </>
           )}
 
-          {error && (
-            <div className="form-error" role="alert">
-              {error}
-            </div>
-          )}
+          
 
           <div className="form-actions">
             <button
