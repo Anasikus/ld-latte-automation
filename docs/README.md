@@ -11,7 +11,6 @@
 - [Матрица метрик](instagram-analytics/metrics.md).
 - [План внедрения](instagram-analytics/implementation-plan.md).
 - [Тест-план Instagram](instagram-analytics/testing-plan.md).
-- [Вопросы заказчику](instagram-analytics/questions.md).
 - [Исходник Mermaid-схемы](instagram-analytics/architecture.mmd).
 - [Экспорт Telegram workflow](../n8n/telegram-services.json).
 - [SQL-схема Supabase](../supabase/schema.sql) и [демоданные](../supabase/seed.sql).
