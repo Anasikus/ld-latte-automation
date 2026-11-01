@@ -11,7 +11,6 @@
 - [access-and-permissions.md](access-and-permissions.md) — выбор OAuth, роли и разрешения.
 - [metrics.md](metrics.md) — матрица метрик, API, периоды и ограничения.
 - [testing-plan.md](testing-plan.md) — сценарии тестирования, обработка ошибок и критерии готовности.
-- [questions.md](questions.md) — вопросы заказчику и риски.
 - [architecture.mmd](architecture.mmd) — исходник визуальной Mermaid-схемы.
 
 ## Предлагаемый стек
